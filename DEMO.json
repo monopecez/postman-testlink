@@ -1,0 +1,513 @@
+{
+	"info": {
+		"_postman_id": "8f6e7e4e-83c2-4e8a-a279-8d8b63ad0d7b",
+		"name": "DEMO A - Postman Feature + Testlink Integration",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "QA-Auto-2372 Server responds with ok",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//can be deleted 2-4",
+							"pm.test(\"Response code is 200\", function () {",
+							"    pm.response.to.be.ok;",
+							"});",
+							"",
+							"//This one is equal to the code above but with testLink Integration ",
+							"//Expecting OK -> true",
+							"pm.sendRequest(testFunctions.setResult(request.name.split(\" \")[0], true))"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/script/test-isman-1",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"script",
+						"test-isman-1"
+					]
+				},
+				"description": "Login from spay mobile apps"
+			},
+			"response": []
+		},
+		{
+			"name": "QA-Auto-2373 Server responds with not ok",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//can be deleted 2-4\r",
+							"pm.test(\"Response code is not 200\", function () {\r",
+							"    pm.response.to.be.not.ok;\r",
+							"});\r",
+							"\r",
+							"//This one is equal to the code above but with testLink Integration \r",
+							"//Expecting NOT OK -> false\r",
+							"pm.sendRequest(testFunctions.setResult(request.name.split(\" \")[0], false))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/script/test-isman-2",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"script",
+						"test-isman-2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "QA-Auto-2374 Server responds with not ok (Incorrect Verb)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code is not 200\", function () {\r",
+							"    pm.response.to.be.not.ok;\r",
+							"});\r",
+							"\r",
+							"//additional result check, response code must be 405 due to incorrect HTTP verb.\r",
+							"//Should be GET, but POST\r",
+							"result = pm.response.code === 405\r",
+							"pm.test(\"Response code is 405\", function () {\r",
+							"    pm.expect(result).to.be.true;\r",
+							"});\r",
+							"\r",
+							"//This one is expecting server NOT OK + response code == 405\r",
+							"pm.sendRequest(testFunctions.setResult(request.name.split(\" \")[0], false, [result]))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/script/test-isman-2",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"script",
+						"test-isman-2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "QA-Auto-2375 Server responds with not ok + additional assertion (Response Code)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code is not 200\", function () {\r",
+							"    pm.response.to.be.not.ok;\r",
+							"});\r",
+							"\r",
+							"//additional result check, response code must be 501\r",
+							"result1 = pm.response.code === 501\r",
+							"pm.test(\"Response code is 501\", function () {\r",
+							"    pm.expect(result1).to.be.true;\r",
+							"});\r",
+							"\r",
+							"pm.sendRequest(testFunctions.setResult(request.name.split(\" \")[0], false, [result1]))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/script/test-isman-2",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"script",
+						"test-isman-2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "QA-Auto-2376 Server responds with ok + string length assertion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code is 200\", function () {\r",
+							"    pm.response.code === 200;\r",
+							"});\r",
+							"\r",
+							"//additional result check, response size/length must be 5\r",
+							"result = pm.response.json().data.length === 5\r",
+							"pm.test(\"Response message length is 5\", function () {\r",
+							"    pm.expect(result).to.be.true;\r",
+							"});\r",
+							"\r",
+							"//expecting server to be OK (true)\r",
+							"pm.sendRequest(testFunctions.setResult(request.name.split(\" \")[0], true, [result]))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/script/test-isman-1",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"script",
+						"test-isman-1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "QA-Auto-2377 Server responds with ok + list length assertion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code is 200\", function () {\r",
+							"    pm.response.code === 200;\r",
+							"});\r",
+							"\r",
+							"//Expecting that there is 5 message according to response body\r",
+							"result = pm.response.json().data.messageid.length === 5\r",
+							"pm.test(\"Response message length is 5\", function () {\r",
+							"    pm.expect(result).to.be.true;\r",
+							"});\r",
+							"\r",
+							"//expecting server to be OK (true)\r",
+							"pm.sendRequest(testFunctions.setResult(request.name.split(\" \")[0], true, [result]))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/script/test-isman-3",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"script",
+						"test-isman-3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "QA-Auto-2378 Server responds with ok + header assertion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code is 200\", function() {",
+							"    pm.response.to.be.ok;",
+							"})",
+							"",
+							"//Expecting that there is 5 message according to response header",
+							"result = pm.response.headers.get('total-message') == 5",
+							"pm.test(\"Total message is 5\", function() {",
+							"    pm.expect(result).to.be.true; ",
+							"})",
+							"",
+							"//expecting server to be OK (true)",
+							"pm.sendRequest(testFunctions.setResult(request.name.split(\" \")[0], true, [result]))"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/script/test-isman-3",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"script",
+						"test-isman-3"
+					]
+				},
+				"description": "Login from spay mobile apps"
+			},
+			"response": []
+		},
+		{
+			"name": "QA-Auto-2379 Server responds with ok + response time assertion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code is 200\", function() {",
+							"    pm.response.to.be.ok;",
+							"})",
+							"",
+							"//expecting response time to be longer than 2000ms",
+							"result = pm.response.responseTime > 2000",
+							"pm.test(\"Response time is over 2000ms\", function () {",
+							"    pm.expect(result).to.be.true;",
+							"});",
+							"",
+							"pm.sendRequest(testFunctions.setResult(request.name.split(\" \")[0], true, [result]))"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/script/test-isman-1",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"script",
+						"test-isman-1"
+					]
+				},
+				"description": "Login from spay mobile apps"
+			},
+			"response": []
+		},
+		{
+			"name": "QA-Auto-2380 Server responds with not ok plus 2 additional assertion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code is not 200\", function () {\r",
+							"    pm.response.to.be.not.ok;\r",
+							"});\r",
+							"\r",
+							"result1 = pm.response.code === 501\r",
+							"result2 = pm.response.json().message === \"Not Implemented Yet\"\r",
+							"\r",
+							"pm.test(\"Response code is 501\", function () {\r",
+							"    pm.expect(result1).to.be.true;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response message is 'Not Implemented Yet'\", function () {\r",
+							"    pm.expect(result2).to.be.true;\r",
+							"});\r",
+							"\r",
+							"pm.sendRequest(testFunctions.setResult(request.name.split(\" \")[0], false, [result1, result2]))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/script/test-isman-2",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"script",
+						"test-isman-2"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"testFunctions = {",
+					"    setResult: function(tcid, expectedToBeOk, additionalResult = [true], addLog = null){",
+					"        if (expectedToBeOk === true){",
+					"            pm.test(pm.response.text(), function() { pm.response.to.be.ok});",
+					"            if (pm.response.code == 200){",
+					"                result = 'p';",
+					"            } else {",
+					"                result = 'f';",
+					"            }",
+					"            ",
+					"        }",
+					"        else{",
+					"            pm.test(pm.response.text(), function() { pm.response.to.be.not.ok});",
+					"            if (pm.response.code !== 200){",
+					"                result = 'p';",
+					"            } else {",
+					"                result = 'f';",
+					"            }",
+					"        }",
+					"        ",
+					"        message = pm.response.status;",
+					"        ",
+					"        if (typeof(additionalResult) !== 'object'){additionalResult = [additionalResult]}",
+					"        addResult = true",
+					"        for (var item of additionalResult){",
+					"            addResult = addResult && item;",
+					"        }",
+					"        ",
+					"        ",
+					"        if (result === 'p' && addResult){",
+					"            result2 = 'p';",
+					"        } else {",
+					"            result2 = 'f';",
+					"        }",
+					"        ",
+					"         if (result2 !== 'p'){",
+					"            try{",
+					"                message += ' | ' + JSON.stringify(pm.response.json());",
+					"                message = addLog + message;",
+					"            } catch(err){",
+					"                message += ' | ' + pm.response.text();",
+					"                message = addLog + message",
+					"            }",
+					"        }",
+					"        ",
+					"        //console.log(\"ASSIGNING TL RESULT: \" + tcid + \" | \" + result2 + \" | \" + message);",
+					"        console.log(addLog);",
+					"        var pmRequestParams = {",
+					"            url: pm.variables.get('TL_URL'),",
+					"            method: 'POST',",
+					"            header: {",
+					"                'Content-Type': 'text/xml'",
+					"            },",
+					"            body: {",
+					"                mode: 'raw',",
+					"                raw: '<?xml version=\\'1.0\\'?><methodCall><methodName>tl.reportTCResult</methodName><params><param><value><struct><member><name>buildid</name><value><string>' +pm.variables.get('TL_BUILDID') + '</string></value></member><member><name>testcaseexternalid</name><value><string>'+tcid+'</string></value></member><member><name>platformid</name><value><string>'+ pm.variables.get('TL_PLATFORMID') +'</string></value></member><member><name>devKey</name><value><string>'+ pm.variables.get('TL_DEVKEY') +'</string></value></member><member><name>testcaseid</name><value><nil/></value></member><member><name>testplanid</name><value><string>'+ pm.variables.get('TL_TESTPLANID') +'</string></value></member><member><name>buildname</name><value><nil/></value></member><member><name>status</name><value><string>'+result2+'</string></value></member><member><name>notes</name><value><string>'+message+ '</string></value></member></struct></value></param></params></methodCall>'",
+					"                }",
+					"            };",
+					"            ",
+					"        if (pm.variables.get('TL_ASSIGNRESULT').toLowerCase() == \"true\" && pm.variables.get(\"HOST\") !== 'localhost'){",
+					"            return pmRequestParams;",
+					"        } else if (pm.variables.get('TL_ASSIGNRESULT').toLowerCase() == 'log') {",
+					"            console.log(pmRequestParams);",
+					"            return null;",
+					"        } else {",
+					"            return null;",
+					"        }",
+					"    }  ",
+					"}",
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "TL_DEVKEY",
+			"value": "d7f0e3aa23719e862e2fbdfa366f10bx"
+		},
+		{
+			"key": "TL_PROJECTID",
+			"value": "99919"
+		},
+		{
+			"key": "TL_TESTPLANID",
+			"value": "278257"
+		},
+		{
+			"key": "TL_BUILDID",
+			"value": "934"
+		},
+		{
+			"key": "TL_PLATFORMID",
+			"value": "116"
+		},
+		{
+			"key": "TL_ASSIGNRESULT",
+			"value": "log"
+		},
+		{
+			"key": "TL_URL",
+			"value": "http://testlink.url/lib/api/xmlrpc/v1/xmlrpc.php"
+		}
+	]
+}
